@@ -99,13 +99,7 @@
     stars.appendChild(fragment);
 
     const options = ['FTP', 'SMTP', 'HTTP', 'DNS'];
-    const answerKey = '2';
-    function decodeAnswer(token) {
-      let value = 0;
-      for (let i = 0; i < token.length; i += 1) {
-        value = (value * 31 + token.charCodeAt(i)) % 97;
-      }
-      return value % 4;
+    const answerKey = '1';
     }
     const correctIndex = decodeAnswer(answerKey);
     const attemptKey = `qr-quest:failed:${window.location.pathname}`;
