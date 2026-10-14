@@ -294,6 +294,8 @@ page_template = '''
       return value % 4;
     }}
     const correctIndex = decodeAnswer(answerKey);
+    const attemptKey = 'qr-quest:failed:' + window.location.pathname;
+    let failedAnswer = localStorage.getItem(attemptKey);
     const nextBtn = document.getElementById('nextBtn');
     const feedback = document.getElementById('feedback');
     const optionRoot = document.getElementById('options');
@@ -303,6 +305,7 @@ page_template = '''
       button.className = 'option';
       button.textContent = `${{index + 1}}. ${{text}}`;
       button.addEventListener('click', () => {{
+        if (failedAnswer !== null) return;
         const isCorrect = index === correctIndex;
         buttons.forEach((btn, btnIndex) => {{
           btn.disabled = true;
@@ -314,14 +317,25 @@ page_template = '''
           feedback.textContent = '✅ Correto! Você desbloqueou a próxima etapa.';
           feedback.className = 'feedback success';
         }} else {{
+          failedAnswer = String(index);
+          localStorage.setItem(attemptKey, failedAnswer);
           feedback.textContent = `❌ Errado. A resposta certa é: ${{options[correctIndex]}}.`;
           feedback.className = 'feedback error';
         }}
-        nextBtn.style.display = 'inline-flex';
+        if (isCorrect) nextBtn.style.display = 'inline-flex';
       }});
       return button;
     }});
     optionRoot.append(...buttons);
+    if (failedAnswer !== null) {{
+      buttons.forEach((button, index) => {{
+        button.disabled = true;
+        if (index === correctIndex) button.classList.add('correct');
+        if (index === Number(failedAnswer)) button.classList.add('wrong');
+      }});
+      feedback.textContent = `❌ Você já errou esta pergunta. A resposta certa é: ${{options[correctIndex]}}.`;
+      feedback.className = 'feedback error';
+    }}
   </script>
 </body>
 </html>
