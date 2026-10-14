@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QR Code Quest</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+:root {
+  --bg: #05070d;
+  --bg-2: #0a0f19;
+  --panel: rgba(12, 18, 27, 0.86);
+  --panel-strong: rgba(17, 24, 39, 0.96);
+  --line: rgba(148, 163, 184, 0.16);
+  --text: #ebf3ff;
+  --muted: #a7b7d6;
+  --cyan: #60f6ff;
+  --blue: #4ea5ff;
+  --purple: #b06dff;
+  --pink: #ff5fe8;
+  --green: #7fffd4;
+  --shadow: rgba(96, 246, 255, 0.28);
+}
+*{box-sizing:border-box;}
+html,body{width:100%;margin:0;}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Poppins',Inter,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(176,109,255,.18), transparent 18%),
+    radial-gradient(circle at 80% 15%, rgba(96,246,255,.18), transparent 20%),
+    radial-gradient(circle at 50% 80%, rgba(255,95,232,.10), transparent 18%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:26px;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:32px 32px;
+  mask-image:radial-gradient(circle at 50% 35%, #000 0%, transparent 78%);
+  pointer-events:none;
+}
+#stars{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 8px rgba(255,255,255,.8), 0 0 16px rgba(96,246,255,.7);
+  animation:twinkle 3.4s ease-in-out infinite;
+  opacity:.4;
+}
+.star.big{width:4px;height:4px;box-shadow:0 0 12px rgba(176,109,255,.9), 0 0 24px rgba(96,246,255,.8);}
+@keyframes twinkle{
+  0%,100%{opacity:.2; transform:scale(1);} 50%{opacity:1; transform:scale(1.5);}
+}
+.main-card{
+  width:min(100%, 900px);
+  position:relative;
+  z-index:1;
+  background:rgba(9,13,20,0.82);
+  border:1px solid var(--line);
+  border-radius:30px;
+  box-shadow:0 0 0 1px rgba(96,246,255,.08), 0 30px 80px rgba(0,0,0,.56), 0 0 36px rgba(96,246,255,.10);
+  overflow:hidden;
+}
+.main-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(96,246,255,.06), transparent 18%, transparent 82%, rgba(176,109,255,.08));
+  pointer-events:none;
+}
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:22px 28px;
+  border-bottom:1px solid var(--line);
+  background:rgba(17,24,39,.72);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(96,246,255,.12);
+  border:1px solid rgba(96,246,255,.35);
+  color:var(--cyan);
+  font-size:.68rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:800;
+}
+.small-tag{color:var(--muted);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;}
+.content{padding:30px 28px 28px;}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:24px;align-items:center;}
+.hero h1{margin:0 0 14px;font-size:clamp(2rem, 5vw, 3.4rem);line-height:1.05;letter-spacing:.05em;text-transform:uppercase;}
+.hero h1 .neon{color:var(--cyan);text-shadow:0 0 18px rgba(96,246,255,.7);}
+.lead{margin:0;color:var(--muted);font-size:1.05rem;line-height:1.8;}
+.qr-box{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:5px;
+  padding:16px;
+  width:min(250px,100%);
+  aspect-ratio:1;
+  margin:0 auto;
+  background:#f2f8ff;
+  border-radius:22px;
+  box-shadow:0 0 22px rgba(96,246,255,.32), 0 0 44px rgba(176,109,255,.2);
+}
+.qr-box span{display:block;background:#07111f;border-radius:4px;opacity:.88;}
+.qr-box span:nth-child(odd){opacity:.2;}
+.qr-box span:nth-child(3n){background:#0ea5e9;}
+.qr-box span:nth-child(4n){background:#8b5cf6;}
+.info-grid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:16px;margin-top:26px;}
+.info-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:18px 18px 16px;
+  box-shadow:inset 0 0 0 1px rgba(96,246,255,.04);
+}
+.info-card strong{display:block;margin-bottom:8px;color:var(--text);font-size:1rem;letter-spacing:.04em;}
+.info-card p{margin:0;color:var(--muted);line-height:1.6;font-size:.94rem;}
+.rule-list{margin:22px 0 0;padding-left:1.2rem;color:var(--muted);line-height:1.9;}
+.rule-list li::marker{color:var(--cyan);}
+.notice{
+  margin-top:28px;
+  padding:18px 20px;
+  border-radius:18px;
+  border:1px solid rgba(255,95,232,.22);
+  background:rgba(255,95,232,.06);
+  color:var(--text);
+  line-height:1.8;
+}
+.notice strong{color:var(--pink);}
+.stage-clues{margin:22px 0 0;padding-left:1.2rem;color:var(--muted);line-height:1.9;}
+.stage-clues li{margin:10px 0;}
+.stage-clues strong{color:var(--text);}
+.starter-link{display:inline-block;margin-left:8px;color:var(--cyan);font-weight:700;text-decoration:none;}
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;}
+  .info-grid{grid-template-columns:1fr;}
+  .header{padding:18px 20px;}
+  .content{padding:20px;}
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+
+<main class="main-card">
+  <header class="header">
+    <span class="badge">Code Quest</span>
+    <span class="small-tag">Evento / Game</span>
+  </header>
+
+  <div class="content">
+    <section class="hero">
+      <div>
+        <h1><span class="neon">Desafio</span> WEEK-IT</h1>
+        <p class="lead">Este é o briefing do jogo: cada etapa é uma pergunta de múltipla escolha sobre computação. O nível vai ficando mais difícil conforme você avança pelas páginas do desafio.</p>
+      </div>
+      <div class="qr-box" aria-label="Visualização do QR do jogo">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </section>
+
+    <div class="info-grid">
+      <article class="info-card">
+        <strong>Como funciona</strong>
+        <p>Existem 5 fases escondidas pelo ambiente. Cada QR Code está em um local diferente e a dica da fase mostra onde procurar.</p>
+      </article>
+      <article class="info-card">
+        <strong>Regra principal</strong>
+        <p>Se você acertar, tire um print da tela com o ID gerado e depois mostre para o responsável do evento.</p>
+      </article>
+      <article class="info-card">
+        <strong>É permitido</strong>
+        <p>O jogo é individual, rápido e focado em lógica e conhecimento técnico. O objetivo é participar e aprender.</p>
+      </article>
+    </div>
+
+    <ul class="rule-list">
+      <li>Há 5 fases no total e cada uma está em um ponto diferente do espaço.</li>
+      <li>As perguntas vão do nível mais fácil ao mais difícil.</li>
+      <li>Quando acertar, o sistema gera um ID único para esta vitória.</li>
+      <li>Não repita a mesma tela: cada acerto cria uma identificação diferente para evitar duplicatas.</li>
+      <li>Ao final, mostre o print para confirmar a participação.</li>
+    </ul>
+
+    <div class="notice">
+      <strong>Importante:</strong> somente o acerto gera o código. Esse ID é exclusivo para cada tentativa correta, então não vai aparecer igual em todas as vezes.
+    </div>
+
+    <ol class="stage-clues" aria-label="Dicas das fases">
+      <li><strong>Fase 1:</strong> estou perto do chão, no bloco H. <a class="starter-link" href="atomo.html">Acessar primeira fase</a></li>
+      <li><strong>Fase 2:</strong> estou perto da escada, onde os corredores se encontram e o silêncio fica mais curto.</li>
+      <li><strong>Fase 3:</strong> estou em um lugar de passagem, ao lado da porta que leva ao lado de fora do bloco principal.</li>
+      <li><strong>Fase 4:</strong> estou em um ponto de observação, perto das janelas e do espaço mais alto da área de estudo.</li>
+      <li><strong>Fase 5:</strong> estou no local de maior visibilidade, onde a energia do evento parece estar mais concentrada.</li>
+    </ol>
+  </div>
+</main>
+
+<script>
+(function(){
+  const container = document.getElementById('stars');
+  const count = window.innerWidth < 480 ? 50 : (window.innerWidth < 900 ? 90 : 140);
+  const fragment = document.createDocumentFragment();
+  for (let i=0; i<count; i++){
+    const star = document.createElement('span');
+    star.className = (Math.random() < 0.18 ? 'star big' : 'star');
+    star.style.top = (Math.random()*100) + '%';
+    star.style.left = (Math.random()*100) + '%';
+    star.style.animationDelay = (Math.random()*3.5).toFixed(2) + 's';
+    star.style.animationDuration = (2.8 + Math.random()*3.2).toFixed(2) + 's';
+    fragment.appendChild(star);
+  }
+  container.appendChild(fragment);
+})();
+</script>
+</body>
+</html>
+
+</script>
+</body>
+</html>

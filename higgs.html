@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR 05</title>
+  <style>
+    :root { --bg: #03060d; --bg-2: #0a0f1a; --line: rgba(148, 163, 184, 0.18); --text: #edf6ff; --muted: #a5b4cf; --cyan: #67e8f9; --blue: #60a5fa; --purple: #a78bfa; --green: #34d399; --red: #f87171; --shadow: rgba(103, 232, 249, 0.18); }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(167, 139, 250, 0.18), transparent 18%),
+        radial-gradient(circle at 80% 20%, rgba(103, 232, 249, 0.12), transparent 20%),
+        linear-gradient(180deg, #010409, var(--bg) 28%, var(--bg-2));
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: radial-gradient(circle at 50% 35%, #000 0%, transparent 80%);
+      pointer-events: none;
+    }
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px; border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 8px rgba(255,255,255,0.8), 0 0 12px rgba(103,232,249,0.8);
+      animation: twinkle 3.6s ease-in-out infinite;
+      opacity: 0.4;
+    }
+    .star.big { width: 4px; height: 4px; box-shadow: 0 0 12px rgba(167,139,250,0.9), 0 0 18px rgba(103,232,249,0.8); }
+    @keyframes twinkle { 0%,100%{opacity:0.18;transform:scale(1);} 50%{opacity:1;transform:scale(1.4);} }
+    .shell { width: min(760px, 100%); background: rgba(8, 12, 18, 0.86); border: 1px solid var(--line); border-radius: 26px; box-shadow: 0 0 0 1px rgba(103,232,249,0.05), 0 15px 60px rgba(0,0,0,0.55), 0 0 24px rgba(103,232,249,0.12); overflow: hidden; position: relative; z-index: 1; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 22px; border-bottom: 1px solid var(--line); background: rgba(15, 23, 42, 0.7); }
+    .tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 8px 12px; background: rgba(103, 232, 249, 0.12); border: 1px solid rgba(103, 232, 249, 0.3); color: var(--cyan); font-size: 0.78rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+    .level { color: var(--muted); font-size: 0.85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .question-panel { background: rgba(12, 16, 24, 0.9); border: 1px solid var(--line); border-radius: 22px; padding: 26px; margin: 24px; }
+    .label { display: inline-block; margin-bottom: 10px; color: var(--cyan); letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; font-weight: 700; }
+    .question-panel h1 { margin: 0 0 18px; font-size: clamp(1.5rem, 3vw, 2.3rem); line-height: 1.4; color: #f8fafc; }
+    .options { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
+    .option { width: 100%; border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(17, 24, 39, 0.9); color: var(--text); border-radius: 14px; padding: 14px 16px; text-align: left; font-size: 1rem; cursor: pointer; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+    .option:hover { transform: translateY(-1px); border-color: rgba(103, 232, 249, 0.6); background: rgba(96, 165, 250, 0.08); }
+    .option.correct { background: rgba(16, 185, 129, 0.18); border-color: rgba(52, 211, 153, 0.9); color: #d1fae5; }
+    .option.wrong { background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.8); color: #fee2e2; }
+    .feedback { min-height: 56px; margin-top: 18px; border-radius: 14px; padding: 14px 16px; font-size: 1rem; line-height: 1.5; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(148, 163, 184, 0.14); color: var(--muted); }
+    .feedback.success { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.5); color: #d1fae5; }
+    .feedback.error { background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.5); color: #fee2e2; }
+    .victory-card { display: none; margin-top: 18px; padding: 16px 18px; border: 1px solid rgba(103, 232, 249, 0.42); border-radius: 16px; background: rgba(8, 17, 27, 0.9); box-shadow: 0 0 18px rgba(103, 232, 249, 0.12); }
+    .victory-card.visible { display: block; }
+    .victory-card .label { display:block; margin-bottom:8px; color:#70f6ff; text-transform:uppercase; letter-spacing:.12em; font-size:.7rem; font-weight:700; }
+    .victory-card strong { display:block; font-size:1.4rem; letter-spacing:.08em; color:#f8fafc; }
+    .victory-card small { display:block; margin-top:8px; color:var(--muted); line-height:1.5; }
+    @media (max-width: 720px) { .topbar { flex-direction: column; align-items: flex-start; } .question-panel { padding: 20px; margin: 18px; } }
+  </style>
+</head>
+<body>
+  <div id="stars"></div>
+  <div class="shell">
+    <div class="topbar"><div class="tag">QR-05</div><div class="level">Nível 5 · Muito difícil</div></div>
+    <main class="question-panel">
+      <span class="label">Pergunta</span>
+      <h1>Qual protocolo é usado para enviar e-mails entre servidores?</h1>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">Escolha uma alternativa para responder.</div>
+      <div class="victory-card" id="victoryCard"><span class="label">ID de acerto</span><strong id="victoryCode">-</strong><small>Salve esse código e tire um print para mostrar depois.</small></div>
+    </main>
+  </div>
+  <script>
+    const stars = document.getElementById('stars');
+    const totalStars = window.innerWidth < 480 ? 38 : (window.innerWidth < 900 ? 60 : 100);
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < totalStars; i++) {
+      const star = document.createElement('span');
+      star.className = (Math.random() < 0.18 ? 'star big' : 'star');
+      star.style.top = (Math.random() * 100) + '%';
+      star.style.left = (Math.random() * 100) + '%';
+      star.style.animationDelay = (Math.random() * 4).toFixed(2) + 's';
+      star.style.animationDuration = (2.8 + Math.random() * 3.2).toFixed(2) + 's';
+      fragment.appendChild(star);
+    }
+    stars.appendChild(fragment);
+
+    const options = ['FTP', 'SMTP', 'HTTP', 'DNS'];
+    const answerKey = '2';
+    function decodeAnswer(token) {
+      let value = 0;
+      for (let i = 0; i < token.length; i += 1) {
+        value = (value * 31 + token.charCodeAt(i)) % 97;
+      }
+      return value % 4;
+    }
+    const correctIndex = decodeAnswer(answerKey);
+    const feedback = document.getElementById('feedback');
+    const optionRoot = document.getElementById('options');
+    const victoryCard = document.getElementById('victoryCard');
+    const victoryCode = document.getElementById('victoryCode');
+    function makeUniqueCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const randomPart = Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      return `NEON-${new Date().getFullYear()}-${randomPart}`;
+    }
+    const buttons = options.map((text, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'option';
+      button.textContent = `${index + 1}. ${text}`;
+      button.addEventListener('click', () => {
+        const isCorrect = index === correctIndex;
+        buttons.forEach((btn, btnIndex) => {
+          btn.disabled = true;
+          btn.classList.remove('correct', 'wrong');
+          if (btnIndex === correctIndex) btn.classList.add('correct');
+          if (btnIndex === index && !isCorrect) btn.classList.add('wrong');
+        });
+        if (isCorrect) {
+          const code = makeUniqueCode();
+          victoryCode.textContent = code;
+          victoryCard.classList.add('visible');
+          feedback.textContent = '✅ Correto! Tire um print com esse ID e mostre depois.';
+          feedback.className = 'feedback success';
+        } else {
+          victoryCard.classList.remove('visible');
+          feedback.textContent = `❌ Errado. A resposta certa é: ${options[correctIndex]}.`;
+          feedback.className = 'feedback error';
+        }
+      });
+      return button;
+    });
+    optionRoot.append(...buttons);
+  </script>
+</body>
+</html>
