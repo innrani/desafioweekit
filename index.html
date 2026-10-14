@@ -117,22 +117,22 @@ body::before{
 .hero h1{margin:0 0 14px;font-size:clamp(2rem, 5vw, 3.4rem);line-height:1.05;letter-spacing:.05em;text-transform:uppercase;}
 .hero h1 .neon{color:var(--cyan);text-shadow:0 0 18px rgba(96,246,255,.7);}
 .lead{margin:0;color:var(--muted);font-size:1.05rem;line-height:1.8;}
-.qr-box{
-  display:grid;
-  grid-template-columns:repeat(7, 1fr);
-  gap:5px;
-  padding:16px;
-  width:min(250px,100%);
-  aspect-ratio:1;
+.owl-art{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:min(100%, 520px);
   margin:0 auto;
-  background:#f2f8ff;
-  border-radius:22px;
-  box-shadow:0 0 22px rgba(96,246,255,.32), 0 0 44px rgba(176,109,255,.2);
+  padding:8px 10px 0;
 }
-.qr-box span{display:block;background:#07111f;border-radius:4px;opacity:.88;}
-.qr-box span:nth-child(odd){opacity:.2;}
-.qr-box span:nth-child(3n){background:#0ea5e9;}
-.qr-box span:nth-child(4n){background:#8b5cf6;}
+.owl-art img{
+  width:100%;
+  max-width:520px;
+  height:auto;
+  display:block;
+  border-radius:22px;
+  filter:drop-shadow(0 0 20px rgba(96,246,255,.28)) drop-shadow(0 0 30px rgba(176,109,255,.18));
+}
 .info-grid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:16px;margin-top:26px;}
 .info-card{
   background:var(--panel);
@@ -182,14 +182,8 @@ body::before{
         <h1><span class="neon">Desafio</span> WEEK-IT</h1>
         <p class="lead">Este é o briefing do jogo: cada etapa é uma pergunta de múltipla escolha sobre computação. O nível vai ficando mais difícil conforme você avança pelas páginas do desafio.</p>
       </div>
-      <div class="qr-box" aria-label="Visualização do QR do jogo">
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      <div class="owl-art" aria-label="Logo do evento Week IT">
+        <img src="ICONE WEEK IT (2).png" alt="Logo Week IT" />
       </div>
     </section>
 
