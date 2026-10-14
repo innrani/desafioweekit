@@ -33,12 +33,10 @@ body{
     radial-gradient(circle at 50% 80%, rgba(255,95,232,.10), transparent 18%),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
   color:var(--text);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:26px;
+  padding:26px 26px 56px;
   position:relative;
   overflow-x:hidden;
+  overflow-y:auto;
 }
 body::before{
   content:"";
@@ -74,6 +72,7 @@ body::before{
 }
 .main-card{
   width:min(100%, 900px);
+  margin:0 auto;
   position:relative;
   z-index:1;
   background:rgba(9,13,20,0.82);
@@ -247,10 +246,6 @@ body::before{
   }
   container.appendChild(fragment);
 })();
-</script>
-</body>
-</html>
-
 </script>
 </body>
 </html>
