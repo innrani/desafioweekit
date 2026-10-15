@@ -80,7 +80,7 @@
     </div>
     <main class="question-panel">
       <span class="label">Pergunta</span>
-      <h1>Qual é a complexidade de tempo de uma busca binária em um vetor com n elementos?</h1>
+      <h1>Por que a busca binária precisa que os dados estejam ordenados?</h1>
       <div class="options" id="options"></div>
       <div class="feedback" id="feedback">Escolha uma alternativa para responder.</div>
       <div class="victory-card" id="victoryCard"><span class="label">ID de acerto</span><strong id="victoryCode">-</strong><small>Salve esse código e tire um print para mostrar depois.</small></div>
@@ -101,17 +101,13 @@
     }
     stars.appendChild(fragment);
 
-    const options = ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'];
-    const answerKey = '1';
-    function decodeAnswer(token) {
-      let value = 0;
-      for (let i = 0; i < token.length; i += 1) {
-        value = (value * 31 + token.charCodeAt(i)) % 97;
-      }
-      return value % 4;
+    const options = ['Porque ela compara o elemento procurado com o do meio e usa a ordem para descartar metade dos dados', 'Porque ela verifica todos os elementos, um por um', 'Porque a ordenação reduz o tamanho dos arquivos', 'Porque ela só funciona com números pares'];
+    const optionKey = 0x5a;
+    const optionCode = 0x5a;
+    function matchesSelection(index) {
+      return (index ^ optionKey) === optionCode;
     }
-    const correctIndex = decodeAnswer(answerKey);
-    const attemptKey = `qr-quest:failed:${window.location.pathname}`;
+    const attemptKey = `qr-quest:failed:v2:${window.location.pathname}`;
     let failedAnswer = localStorage.getItem(attemptKey);
     const feedback = document.getElementById('feedback');
     const optionRoot = document.getElementById('options');
@@ -129,12 +125,11 @@
       button.textContent = `${index + 1}. ${text}`;
       button.addEventListener('click', () => {
         if (failedAnswer !== null) return;
-        const isCorrect = index === correctIndex;
+        const isCorrect = matchesSelection(index);
         buttons.forEach((btn, btnIndex) => {
           btn.disabled = true;
           btn.classList.remove('correct', 'wrong');
-          if (btnIndex === correctIndex) btn.classList.add('correct');
-          if (btnIndex === index && !isCorrect) btn.classList.add('wrong');
+          if (btnIndex === index) btn.classList.add(isCorrect ? 'correct' : 'wrong');
         });
         if (isCorrect) {
           const code = makeUniqueCode();
@@ -146,7 +141,7 @@
           failedAnswer = String(index);
           localStorage.setItem(attemptKey, failedAnswer);
           victoryCard.classList.remove('visible');
-          feedback.textContent = `❌ Errado. A resposta certa é: ${options[correctIndex]}.`;
+          feedback.textContent = '❌ Resposta incorreta.';
           feedback.className = 'feedback error';
         }
       });
@@ -156,10 +151,9 @@
     if (failedAnswer !== null) {
       buttons.forEach((button, index) => {
         button.disabled = true;
-        if (index === correctIndex) button.classList.add('correct');
         if (index === Number(failedAnswer)) button.classList.add('wrong');
       });
-      feedback.textContent = `❌ Você já errou esta pergunta. A resposta certa é: ${options[correctIndex]}.`;
+      feedback.textContent = '❌ Você já respondeu esta pergunta incorretamente.';
       feedback.className = 'feedback error';
     }
   </script>

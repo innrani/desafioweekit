@@ -145,28 +145,28 @@ index_html = dedent('''
       <section class="level-grid" aria-label="Lista das fases do jogo">
         <a class="card-level" href="atomo.html">
           <span class="level-badge">Nível 1</span>
-          <h3>Introdução</h3>
-          <p>Estruturas básicas e conceitos iniciais.</p>
+          <h3>Sistema operacional</h3>
+          <p>Gerenciamento de recursos e execução de programas.</p>
         </a>
         <a class="card-level" href="foton.html">
           <span class="level-badge">Nível 2</span>
-          <h3>Fundamentos</h3>
-          <p>Sistema operacional e funcionamento do computador.</p>
+          <h3>Terminais</h3>
+          <p>Computadores dependentes de um sistema central.</p>
         </a>
         <a class="card-level" href="genoma.html">
           <span class="level-badge">Nível 3</span>
-          <h3>Web</h3>
-          <p>HTML, CSS e a linguagem da internet.</p>
+          <h3>Programação</h3>
+          <p>Compiladores, interpretadores e execução de código.</p>
         </a>
         <a class="card-level" href="quasar.html">
           <span class="level-badge">Nível 4</span>
           <h3>Algoritmos</h3>
-          <p>Complexidade e lógica de busca.</p>
+          <p>Busca binária e a necessidade de dados ordenados.</p>
         </a>
         <a class="card-level" href="higgs.html">
           <span class="level-badge">Nível 5</span>
-          <h3>Final</h3>
-          <p>Conceitos avançados de redes e comunicação.</p>
+          <h3>Redes</h3>
+          <p>Entrega confiável de dados com o protocolo TCP.</p>
         </a>
       </section>
     </main>
@@ -236,8 +236,12 @@ page_template = '''
   </div>
   <script>
     const options = {choices};
-    const correctIndex = {correct_index};
-    const attemptKey = 'qr-quest:failed:' + window.location.pathname;
+    const optionKey = 0x5a;
+    const optionCode = {answer_code};
+    function matchesSelection(index) {{
+      return (index ^ optionKey) === optionCode;
+    }}
+    const attemptKey = 'qr-quest:failed:v2:' + window.location.pathname;
     let failedAnswer = localStorage.getItem(attemptKey);
     const nextBtn = document.getElementById('nextBtn');
     const feedback = document.getElementById('feedback');
@@ -249,12 +253,11 @@ page_template = '''
       button.textContent = `${{index + 1}}. ${{text}}`;
       button.addEventListener('click', () => {{
         if (failedAnswer !== null) return;
-        const isCorrect = index === correctIndex;
+        const isCorrect = matchesSelection(index);
         buttons.forEach((btn, btnIndex) => {{
           btn.disabled = true;
           btn.classList.remove('correct', 'wrong');
-          if (btnIndex === correctIndex) btn.classList.add('correct');
-          if (btnIndex === index && !isCorrect) btn.classList.add('wrong');
+          if (btnIndex === index) btn.classList.add(isCorrect ? 'correct' : 'wrong');
         }});
         if (isCorrect) {{
           feedback.textContent = '✅ Correto! Você desbloqueou a próxima etapa.';
@@ -262,7 +265,7 @@ page_template = '''
         }} else {{
           failedAnswer = String(index);
           localStorage.setItem(attemptKey, failedAnswer);
-          feedback.textContent = `❌ Errado. A resposta certa é: ${{options[correctIndex]}}.`;
+          feedback.textContent = '❌ Resposta incorreta.';
           feedback.className = 'feedback error';
         }}
         if (isCorrect) nextBtn.style.display = 'inline-flex';
@@ -273,10 +276,9 @@ page_template = '''
     if (failedAnswer !== null) {{
       buttons.forEach((button, index) => {{
         button.disabled = true;
-        if (index === correctIndex) button.classList.add('correct');
         if (index === Number(failedAnswer)) button.classList.add('wrong');
       }});
-      feedback.textContent = `❌ Você já errou esta pergunta. A resposta certa é: ${{options[correctIndex]}}.`;
+      feedback.textContent = '❌ Você já respondeu esta pergunta incorretamente.';
       feedback.className = 'feedback error';
     }}
   </script>
@@ -289,45 +291,45 @@ questions = [
         'file': 'atomo.html',
         'level': '01',
         'level_text': 'Nível 1 · Fácil',
-        'question': 'Qual estrutura de dados armazena elementos em sequência e permite acesso pelo índice?',
-        'choices': ['Array', 'Árvore', 'HashMap', 'Pilha'],
-        'correct_index': 0,
+        'question': 'Qual é a função principal de um sistema operacional?',
+        'choices': ['Gerenciar os recursos do computador e permitir a execução de programas', 'Criar as peças físicas do computador', 'Converter todos os arquivos em páginas web', 'Conectar o computador somente à internet'],
+        'selection_code': 0x5a,
         'next_page': 'foton.html',
     },
     {
         'file': 'foton.html',
         'level': '02',
         'level_text': 'Nível 2 · Intermediário',
-        'question': 'Qual é a principal função de um sistema operacional?',
-        'choices': ['Processar imagens 3D', 'Gerenciar recursos do computador e executar programas', 'Criar páginas web', 'Compilar código em linguagem de máquina'],
-        'correct_index': 1,
+        'question': 'O que é um terminal burro?',
+        'choices': ['Um computador que executa todos os programas localmente', 'Um dispositivo com pouca capacidade de processamento, que depende de outro computador para executar tarefas', 'Um protocolo usado para transferir arquivos', 'Um programa que traduz código-fonte'],
+        'selection_code': 0x5b,
         'next_page': 'genoma.html',
     },
     {
         'file': 'genoma.html',
         'level': '03',
         'level_text': 'Nível 3 · Intermediário',
-        'question': 'Qual linguagem é usada principalmente para definir a estrutura e o conteúdo de uma página web?',
-        'choices': ['CSS', 'JavaScript', 'HTML', 'SQL'],
-        'correct_index': 2,
+        'question': 'Qual é a diferença geral entre um compilador e um interpretador?',
+        'choices': ['O compilador traduz o programa antes da execução; o interpretador analisa e executa instruções durante a execução', 'O compilador gerencia arquivos; o interpretador gerencia a memória', 'O compilador só funciona na internet; o interpretador só funciona sem internet', 'Não há diferença: os dois são sistemas operacionais'],
+        'selection_code': 0x5a,
         'next_page': 'quasar.html',
     },
     {
         'file': 'quasar.html',
         'level': '04',
         'level_text': 'Nível 4 · Difícil',
-        'question': 'Qual é a complexidade de tempo de uma busca binária em um vetor com n elementos?',
-        'choices': ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
-        'correct_index': 1,
+        'question': 'Por que a busca binária precisa que os dados estejam ordenados?',
+        'choices': ['Porque ela compara o elemento procurado com o do meio e usa a ordem para descartar metade dos dados', 'Porque ela verifica todos os elementos, um por um', 'Porque a ordenação reduz o tamanho dos arquivos', 'Porque ela só funciona com números pares'],
+        'selection_code': 0x5a,
         'next_page': 'higgs.html',
     },
     {
         'file': 'higgs.html',
         'level': '05',
         'level_text': 'Nível 5 · Muito difícil',
-        'question': 'Qual protocolo da camada de transporte é responsável por garantir entrega confiável de dados entre hosts?',
-        'choices': ['UDP', 'HTTP', 'TCP', 'FTP'],
-        'correct_index': 2,
+        'question': 'Como o TCP ajuda a garantir que os dados cheguem corretamente, mesmo quando há perda de pacotes?',
+        'choices': ['Envia todos os dados sem identificá-los', 'Usa números de sequência e confirmações; se necessário, retransmite os dados', 'Converte os pacotes em endereços IP', 'Impede que os pacotes atravessem roteadores'],
+        'selection_code': 0x5b,
         'next_page': 'index.html',
     },
 ]
@@ -339,7 +341,7 @@ for item in questions:
         level_text=item['level_text'],
         question=item['question'],
         choices=repr(item['choices']),
-        correct_index=item['correct_index'],
+        answer_code=item['selection_code'],
         next_page=item['next_page'],
     )
     (root / item['file']).write_text(html, encoding='utf-8')

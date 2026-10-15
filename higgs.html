@@ -307,14 +307,14 @@
       <span class="label">Pergunta</span>
 
       <h1>
-        Qual protocolo é usado para enviar e-mails entre servidores?
+        Como o TCP ajuda a garantir que os dados cheguem corretamente, mesmo quando há perda de pacotes?
       </h1>
 
       <div class="options" id="options">
-        <button type="button" class="option">1. FTP</button>
-        <button type="button" class="option">2. SMTP</button>
-        <button type="button" class="option">3. HTTP</button>
-        <button type="button" class="option">4. DNS</button>
+        <button type="button" class="option">1. Envia todos os dados sem identificá-los</button>
+        <button type="button" class="option">2. Usa números de sequência e confirmações; se necessário, retransmite os dados</button>
+        <button type="button" class="option">3. Converte os pacotes em endereços IP</button>
+        <button type="button" class="option">4. Impede que os pacotes atravessem roteadores</button>
       </div>
 
       <div class="feedback" id="feedback">
@@ -381,12 +381,16 @@
 
       stars.appendChild(fragment);
 
-      // Resposta correta: SMTP
-      const options = ['FTP', 'SMTP', 'HTTP', 'DNS'];
-      const correctIndex = 1;
+      const options = ['Envia todos os dados sem identificá-los', 'Usa números de sequência e confirmações; se necessário, retransmite os dados', 'Converte os pacotes em endereços IP', 'Impede que os pacotes atravessem roteadores'];
+      const optionKey = 0x5a;
+      const optionCode = 0x5b;
+
+      function matchesSelection(index) {
+        return (index ^ optionKey) === optionCode;
+      }
 
       const attemptKey =
-        'qr-quest:failed:' + window.location.pathname;
+        'qr-quest:failed:v2:' + window.location.pathname;
 
       let failedAnswer = null;
 
@@ -411,19 +415,15 @@
 
       // Exibe o resultado da resposta
       function showResult(selectedIndex) {
-        const isCorrect = selectedIndex === correctIndex;
+        const isCorrect = matchesSelection(selectedIndex);
         const buttons = optionRoot.querySelectorAll('button');
 
         buttons.forEach((button, index) => {
           button.disabled = true;
           button.classList.remove('correct', 'wrong');
 
-          if (index === correctIndex) {
-            button.classList.add('correct');
-          }
-
-          if (index === selectedIndex && !isCorrect) {
-            button.classList.add('wrong');
+          if (index === selectedIndex) {
+            button.classList.add(isCorrect ? 'correct' : 'wrong');
           }
         });
 
@@ -446,9 +446,7 @@
 
           victoryCard.classList.remove('visible');
 
-          feedback.textContent =
-            'Errado. A resposta certa é: ' +
-            options[correctIndex] + '.';
+          feedback.textContent = 'Resposta incorreta.';
 
           feedback.className = 'feedback error';
         }
@@ -480,17 +478,12 @@
         buttons.forEach((button, index) => {
           button.disabled = true;
 
-          if (index === correctIndex) {
-            button.classList.add('correct');
-          }
-
           if (index === Number(failedAnswer)) {
             button.classList.add('wrong');
           }
         });
 
-        feedback.textContent =
-          'Você já errou esta pergunta. A resposta certa é: SMTP.';
+        feedback.textContent = 'Você já respondeu esta pergunta incorretamente.';
 
         feedback.className = 'feedback error';
       }
