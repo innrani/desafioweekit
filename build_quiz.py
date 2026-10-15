@@ -1,7 +1,7 @@
 from pathlib import Path
 from textwrap import dedent
 
-root = Path(r"C:\Users\colegio\Downloads\desafio seneca")
+root = Path(__file__).resolve().parent
 
 index_html = dedent('''
 <!DOCTYPE html>
@@ -71,28 +71,6 @@ index_html = dedent('''
       border-radius: 22px;
       padding: 24px;
     }
-    .qr-box {
-      position: relative;
-      width: min(240px, 90%);
-      aspect-ratio: 1;
-      margin: 0 auto 18px;
-      padding: 14px;
-      border-radius: 18px;
-      background: #f8fafc;
-      box-shadow: 0 16px 30px rgba(14, 116, 144, 0.25);
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-    }
-    .qr-box span {
-      display: block;
-      border-radius: 3px;
-      background: #0f172a;
-      opacity: 0.85;
-    }
-    .qr-box span:nth-child(odd) { opacity: 0.2; }
-    .qr-box span:nth-child(3n) { background: #0ea5e9; }
-    .qr-box span:nth-child(4n) { background: #a78bfa; }
     .intro-card h2 {
       margin: 0 0 12px;
       font-size: 1.3rem;
@@ -161,15 +139,6 @@ index_html = dedent('''
     </header>
     <main class="content">
       <section class="intro-card">
-        <div class="qr-box" aria-label="Códigos de QR do desafio">
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
         <h2>Missão</h2>
         <p>Resolva as 5 perguntas de computação e marque pontuação máxima. Cada fase aumenta o nível de dificuldade.</p>
       </section>
@@ -215,7 +184,7 @@ page_template = '''
   <title>{title}</title>
   <style>
     :root {{
-      --bg: #07111f; --panel: rgba(15, 23, 42, 0.9); --line: rgba(148, 163, 184, 0.18); --text: #e2e8f0; --muted: #a5b4cf; --cyan: #67e8f9; --blue: #60a5fa; --purple: #a78bfa; --green: #34d399; --red: #f87171; --shadow: rgba(14, 116, 144, 0.25);
+      --bg: #07111f; --panel: rgba(15, 23, 42, 0.9); --line: rgba(148, 163, 184, 0.18); --text: #e2e8f0; --muted: #a5b4cf; --cyan: #67e8f9; --blue: #60a5fa; --purple: #a78bfa; --green: #34d399; --red: #f87171;
     }}
     * {{ box-sizing: border-box; }}
     html, body {{ margin: 0; min-height: 100%; }}
@@ -226,14 +195,8 @@ page_template = '''
     .topbar {{ display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 22px; border-bottom: 1px solid var(--line); background: rgba(15, 23, 42, 0.7); }}
     .tag {{ display: inline-flex; align-items: center; border-radius: 999px; padding: 8px 12px; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.22); color: var(--green); font-size: 0.78rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }}
     .level {{ color: var(--muted); font-size: 0.85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }}
-    .content {{ display: grid; grid-template-columns: 280px 1fr; gap: 22px; padding: 24px; }}
-    .qr-panel, .question-panel {{ background: rgba(15, 23, 42, 0.85); border: 1px solid var(--line); border-radius: 22px; padding: 22px; }}
-    .qr-box {{ width: 100%; aspect-ratio: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; padding: 12px; border-radius: 18px; background: #f8fafc; box-shadow: 0 14px 28px var(--shadow); }}
-    .qr-box span {{ display: block; border-radius: 4px; background: #0f172a; opacity: 0.9; }}
-    .qr-box span:nth-child(odd) {{ opacity: 0.2; }}
-    .qr-box span:nth-child(3n) {{ background: #2563eb; }}
-    .qr-box span:nth-child(4n) {{ background: #7c3aed; }}
-    .qr-label {{ text-align: center; margin-top: 14px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; }}
+    .content {{ padding: 24px; }}
+    .question-panel {{ background: rgba(15, 23, 42, 0.85); border: 1px solid var(--line); border-radius: 22px; padding: 22px; }}
     .label {{ display: inline-block; margin-bottom: 10px; color: var(--cyan); letter-spacing: .12em; text-transform: uppercase; font-size: .72rem; font-weight: 700; }}
     .question-panel h1 {{ margin: 0 0 18px; font-size: clamp(1.4rem, 3vw, 2.2rem); line-height: 1.4; color: #f8fafc; }}
     .options {{ display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }}
@@ -249,7 +212,7 @@ page_template = '''
     .btn:hover {{ transform: translateY(-1px); }}
     .btn.secondary {{ background: rgba(148, 163, 184, 0.1); color: var(--text); border-color: rgba(148, 163, 184, 0.18); }}
     .btn.primary {{ background: linear-gradient(135deg, var(--blue), var(--purple)); color: #eff6ff; box-shadow: 0 10px 26px rgba(96, 165, 250, 0.28); }}
-    @media (max-width: 720px) {{ .content {{ grid-template-columns: 1fr; }} .topbar {{ flex-direction: column; align-items: flex-start; }} .shell {{ border-radius: 20px; }} .content {{ padding: 18px; }} .qr-panel, .question-panel {{ padding: 18px; }} }}
+    @media (max-width: 720px) {{ .topbar {{ flex-direction: column; align-items: flex-start; }} .shell {{ border-radius: 20px; }} .content {{ padding: 18px; }} .question-panel {{ padding: 18px; }} }}
   </style>
 </head>
 <body>
@@ -259,18 +222,6 @@ page_template = '''
       <div class="level">{level_text}</div>
     </div>
     <main class="content">
-      <div class="qr-panel">
-        <div class="qr-box" aria-label="Código QR do desafio">
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-        </div>
-        <div class="qr-label">Fase {level}</div>
-      </div>
       <div class="question-panel">
         <span class="label">Pergunta</span>
         <h1>{question}</h1>
@@ -285,15 +236,7 @@ page_template = '''
   </div>
   <script>
     const options = {choices};
-    const answerKey = '{answer_key}';
-    function decodeAnswer(token) {{
-      let value = 0;
-      for (let i = 0; i < token.length; i += 1) {{
-        value = (value * 31 + token.charCodeAt(i)) % 97;
-      }}
-      return value % 4;
-    }}
-    const correctIndex = decodeAnswer(answerKey);
+    const correctIndex = {correct_index};
     const attemptKey = 'qr-quest:failed:' + window.location.pathname;
     let failedAnswer = localStorage.getItem(attemptKey);
     const nextBtn = document.getElementById('nextBtn');
@@ -348,7 +291,7 @@ questions = [
         'level_text': 'Nível 1 · Fácil',
         'question': 'Qual estrutura de dados armazena elementos em sequência e permite acesso pelo índice?',
         'choices': ['Array', 'Árvore', 'HashMap', 'Pilha'],
-        'answer_key': '0',
+        'correct_index': 0,
         'next_page': 'foton.html',
     },
     {
@@ -357,7 +300,7 @@ questions = [
         'level_text': 'Nível 2 · Intermediário',
         'question': 'Qual é a principal função de um sistema operacional?',
         'choices': ['Processar imagens 3D', 'Gerenciar recursos do computador e executar programas', 'Criar páginas web', 'Compilar código em linguagem de máquina'],
-        'answer_key': '1',
+        'correct_index': 1,
         'next_page': 'genoma.html',
     },
     {
@@ -366,7 +309,7 @@ questions = [
         'level_text': 'Nível 3 · Intermediário',
         'question': 'Qual linguagem é usada principalmente para definir a estrutura e o conteúdo de uma página web?',
         'choices': ['CSS', 'JavaScript', 'HTML', 'SQL'],
-        'answer_key': '2',
+        'correct_index': 2,
         'next_page': 'quasar.html',
     },
     {
@@ -375,7 +318,7 @@ questions = [
         'level_text': 'Nível 4 · Difícil',
         'question': 'Qual é a complexidade de tempo de uma busca binária em um vetor com n elementos?',
         'choices': ['O(1)', 'O(log n)', 'O(n)', 'O(n²)'],
-        'answer_key': '1',
+        'correct_index': 1,
         'next_page': 'higgs.html',
     },
     {
@@ -384,7 +327,7 @@ questions = [
         'level_text': 'Nível 5 · Muito difícil',
         'question': 'Qual protocolo da camada de transporte é responsável por garantir entrega confiável de dados entre hosts?',
         'choices': ['UDP', 'HTTP', 'TCP', 'FTP'],
-        'answer_key': '2',
+        'correct_index': 2,
         'next_page': 'index.html',
     },
 ]
@@ -396,7 +339,7 @@ for item in questions:
         level_text=item['level_text'],
         question=item['question'],
         choices=repr(item['choices']),
-        answer_key=item['answer_key'],
+        correct_index=item['correct_index'],
         next_page=item['next_page'],
     )
     (root / item['file']).write_text(html, encoding='utf-8')
